@@ -25,7 +25,7 @@ import plotly.io as pio
 def fig_to_png_base64(fig):
     """Convert a plotly figure to base64 encoded PNG"""
     try:
-        img_bytes = pio.to_image(fig, format="png", width=800, height=400, scale=2)
+        img_bytes = pio.to_image(fig, format="png", width=700, height=300, scale=1.5)
         return base64.b64encode(img_bytes).decode('utf-8')
     except Exception as e:
         return None
@@ -1197,7 +1197,7 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
             line-height: 1.5;
             color: #333;
             background: white;
-            padding: 20px;
+            padding: 15px;
             max-width: 210mm;
             margin: 0 auto;
         }}
@@ -1209,9 +1209,50 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
         }}
         
         @media print {{
-            body {{ padding: 0; }}
+            body {{ 
+                padding: 10px !important;
+                font-size: 9pt !important;
+            }}
             .no-print {{ display: none !important; }}
-            .page-break {{ page-break-after: always; }}
+            .page-break {{ 
+                page-break-after: auto !important;
+                display: none !important;
+            }}
+            .section {{ 
+                margin-bottom: 12px !important;
+                page-break-inside: auto !important;
+            }}
+            .section-header {{
+                font-size: 11pt !important;
+                padding: 8px 12px !important;
+                margin-bottom: 10px !important;
+            }}
+            .metrics {{
+                gap: 10px !important;
+                margin-bottom: 10px !important;
+            }}
+            .metric {{
+                padding: 8px 12px !important;
+                min-width: 100px !important;
+            }}
+            .metric-value {{
+                font-size: 12pt !important;
+            }}
+            .chart-container {{
+                margin: 10px 0 !important;
+            }}
+            .chart-container img {{
+                max-height: 250px !important;
+                width: auto !important;
+            }}
+            .footer {{
+                margin-top: 20px !important;
+                padding: 15px !important;
+            }}
+            .alert {{
+                padding: 8px 12px !important;
+                margin: 6px 0 !important;
+            }}
         }}
         
         /* En-tete */
@@ -1235,7 +1276,7 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
         
         /* Sections */
         .section {{
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             page-break-inside: avoid;
         }}
         
@@ -1415,8 +1456,6 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
         <div class="section-header">Analyse Sante</div>
         {alert_html if alert_html else '<p style="color: #666; padding: 10px;">Aucune alerte significative detectee.</p>'}
     </div>
-    
-    <div class="page-break"></div>
     
     <div class="section">
         <div class="section-header">Statistiques Detailletes</div>
