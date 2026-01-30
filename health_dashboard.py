@@ -1,6 +1,6 @@
 """
 ================================================================================
-TABLEAU DE BORD SANTE FITBIT - VERSION DETAILLEE CONTINUE
+Tableau de bord sante Fitbit - Version detaillee continue
 ================================================================================
 Visualisation complete des donnees Fitbit avec graphiques continus detailles.
 Affiche tous les points de donnees (seconde par seconde) sur un seul graphique.
@@ -31,7 +31,7 @@ def fig_to_png_base64(fig):
         return None
 
 st.set_page_config(
-    page_title="Tableau de Bord Sante Fitbit",
+    page_title="Tableau de bord sante Fitbit",
     page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -566,7 +566,7 @@ def create_continuous_hr_chart(hr_df):
         x=plot_df['timestamp'],
         y=plot_df['bpm'],
         mode='lines',
-        name='Frequence Cardiaque',
+        name='Frequence cardiaque',
         line=dict(color='#e74c3c', width=1),
         hovertemplate='<b>%{x|%Y-%m-%d %H:%M}</b><br>FC: %{y:.0f} bpm<extra></extra>'
     ))
@@ -581,7 +581,7 @@ def create_continuous_hr_chart(hr_df):
             x=hourly_avg['hour'],
             y=hourly_avg['bpm'],
             mode='lines',
-            name='Moyenne Horaire',
+            name='Moyenne horaire',
             line=dict(color='#c0392b', width=3),
             hovertemplate='<b>%{x|%Y-%m-%d %H:%M}</b><br>Moyenne: %{y:.1f} bpm<extra></extra>'
         ))
@@ -602,12 +602,12 @@ def create_continuous_hr_chart(hr_df):
     
     fig.update_layout(
         title=dict(
-            text=f"Frequence Cardiaque Continue - {n_points:,} lectures<br>" +
+            text=f"Frequence cardiaque continue - {n_points:,} lectures<br>" +
                  f"<sub>Min: {min_bpm:.0f} bpm | Max: {max_bpm:.0f} bpm | Moyenne: {avg_bpm:.1f} bpm</sub>",
             font=dict(size=16)
         ),
-        xaxis_title="Date et Heure",
-        yaxis_title="Frequence Cardiaque (bpm)",
+        xaxis_title="Date et heure",
+        yaxis_title="Frequence cardiaque (bpm)",
         yaxis=dict(range=[30, max(180, max_bpm + 10)]),
         hovermode='x unified',
         template='plotly_white',
@@ -629,7 +629,7 @@ def create_continuous_activity_chart(steps_df, calories_df):
     fig = make_subplots(
         rows=2, cols=1,
         shared_xaxes=True,
-        subplot_titles=('Pas par Minute', 'Calories par Minute'),
+        subplot_titles=('Pas par minute', 'Calories par minute'),
         vertical_spacing=0.1
     )
     
@@ -678,7 +678,7 @@ def create_continuous_activity_chart(steps_df, calories_df):
     
     fig.update_layout(
         title=dict(
-            text=f"Activite Continue<br><sub>Total Pas: {int(total_steps):,} | Total Calories: {int(total_cals):,}</sub>",
+            text=f"Activite continue<br><sub>Total pas: {int(total_steps):,} | Total calories: {int(total_cals):,}</sub>",
             font=dict(size=16)
         ),
         hovermode='x unified',
@@ -706,7 +706,7 @@ def create_sleep_chart(sleep_df):
         fig.add_trace(go.Bar(
             x=main_sleep['date'],
             y=main_sleep['minutes_asleep'] / 60,
-            name='Duree de Sommeil',
+            name='Duree de sommeil',
             marker_color='#667eea',
             hovertemplate='<b>%{x|%Y-%m-%d}</b><br>Sommeil: %{y:.1f} heures<extra></extra>'
         ))
@@ -716,9 +716,9 @@ def create_sleep_chart(sleep_df):
                   annotation_text="Recommande (7-9h)", annotation_position="right")
     
     fig.update_layout(
-        title=dict(text="Duree de Sommeil Continue", font=dict(size=16)),
+        title=dict(text="Duree de sommeil continue", font=dict(size=16)),
         xaxis_title="Date",
-        yaxis_title="Heures de Sommeil",
+        yaxis_title="Heures de sommeil",
         hovermode='x unified',
         template='plotly_white',
         height=400,
@@ -743,8 +743,8 @@ def create_sleep_stages_chart(sleep_df):
     
     if has_stages:
         stages = [
-            ('deep_minutes', 'Sommeil Profond', '#4c1d95'),
-            ('light_minutes', 'Sommeil Leger', '#7c3aed'),
+            ('deep_minutes', 'Sommeil profond', '#4c1d95'),
+            ('light_minutes', 'Sommeil leger', '#7c3aed'),
             ('rem_minutes', 'Sommeil REM', '#c084fc'),
             ('wake_minutes', 'Eveille', '#fca5a5')
         ]
@@ -759,7 +759,7 @@ def create_sleep_stages_chart(sleep_df):
                     hovertemplate=f'<b>%{{x|%Y-%m-%d}}</b><br>{name}: %{{y:.0f}} min<extra></extra>'
                 ))
         
-        title = "Phases de Sommeil Continue"
+        title = "Phases de sommeil continue"
         
     elif has_classic:
         stages = [
@@ -778,7 +778,7 @@ def create_sleep_stages_chart(sleep_df):
                     hovertemplate=f'<b>%{{x|%Y-%m-%d}}</b><br>{name}: %{{y:.0f}} min<extra></extra>'
                 ))
         
-        title = "Phases de Sommeil Continue (Mode Classique)"
+        title = "Phases de sommeil continue (mode classique)"
     else:
         return None
     
@@ -805,7 +805,7 @@ def create_hrv_chart(hrv_df):
         rows=2 if 'nremhr' in hrv_df.columns and hrv_df['nremhr'].notna().any() else 1,
         cols=1,
         shared_xaxes=True,
-        subplot_titles=('VFC (RMSSD)', 'Frequence Cardiaque Sommeil (NREM)') if 'nremhr' in hrv_df.columns else ('VFC (RMSSD)',),
+        subplot_titles=('VFC (RMSSD)', 'Frequence cardiaque sommeil (NREM)') if 'nremhr' in hrv_df.columns else ('VFC (RMSSD)',),
         vertical_spacing=0.12
     )
     
@@ -839,7 +839,7 @@ def create_hrv_chart(hrv_df):
             )
     
     fig.update_layout(
-        title=dict(text="Variabilite de la Frequence Cardiaque", font=dict(size=16)),
+        title=dict(text="Variabilite de la frequence cardiaque", font=dict(size=16)),
         hovermode='x unified',
         template='plotly_white',
         height=500,
@@ -860,7 +860,7 @@ def create_spo2_chart(spo2_df):
         x=spo2_df['timestamp'],
         y=spo2_df['average_value'],
         mode='lines+markers',
-        name='SpO2 Moyenne',
+        name='SpO2 moyenne',
         line=dict(color='#3498db', width=2),
         marker=dict(size=6),
         hovertemplate='<b>%{x|%Y-%m-%d}</b><br>SpO2: %{y:.1f}%<extra></extra>'
@@ -890,7 +890,7 @@ def create_spo2_chart(spo2_df):
     fig.add_hline(y=90, line_dash="dash", line_color="red", annotation_text="Bas (90%)")
     
     fig.update_layout(
-        title=dict(text="Saturation en Oxygene (SpO2)", font=dict(size=16)),
+        title=dict(text="Saturation en oxygene (SpO2)", font=dict(size=16)),
         xaxis_title="Date",
         yaxis_title="SpO2 (%)",
         yaxis=dict(range=[85, 100]),
@@ -919,7 +919,7 @@ def create_stress_chart(stress_df):
         x=valid_stress['DATE'],
         y=valid_stress['STRESS_SCORE'],
         mode='lines+markers',
-        name='Score de Stress',
+        name='Score de stress',
         line=dict(color='#e67e22', width=2),
         marker=dict(size=8),
         hovertemplate='<b>%{x|%Y-%m-%d}</b><br>Stress: %{y:.0f}/100<extra></extra>'
@@ -931,7 +931,7 @@ def create_stress_chart(stress_df):
     fig.add_hrect(y0=75, y1=100, line_width=0, fillcolor="red", opacity=0.1, annotation_text="Eleve")
     
     fig.update_layout(
-        title=dict(text="Score de Stress Continue", font=dict(size=16)),
+        title=dict(text="Score de stress continu", font=dict(size=16)),
         xaxis_title="Date",
         yaxis_title="Score (0-100)",
         yaxis=dict(range=[0, 100]),
@@ -963,9 +963,9 @@ def create_hr_histogram(hr_df):
                   annotation_text=f"Moyenne: {avg_hr:.1f}")
     
     fig.update_layout(
-        title=dict(text="Distribution de la Frequence Cardiaque", font=dict(size=16)),
-        xaxis_title="Frequence Cardiaque (bpm)",
-        yaxis_title="Nombre d'Occurrences",
+        title=dict(text="Distribution de la frequence cardiaque", font=dict(size=16)),
+        xaxis_title="Frequence cardiaque (bpm)",
+        yaxis_title="Nombre d'occurrences",
         template='plotly_white',
         height=350,
         margin=dict(l=60, r=40, t=60, b=60),
@@ -1010,7 +1010,7 @@ def analyze_health(hr_summary, sleep_df, hrv_df, spo2_df, stress_df):
         else:
             info.append(f"Saturation en oxygene normale: {avg_spo2:.1f}%")
     
-    # Analyse Sommeil
+    # Analyse sommeil
     if not sleep_df.empty and 'minutes_asleep' in sleep_df.columns:
         main_sleep = sleep_df[sleep_df['main_sleep'] == True]
         if not main_sleep.empty:
@@ -1033,7 +1033,7 @@ def analyze_health(hr_summary, sleep_df, hrv_df, spo2_df, stress_df):
         else:
             info.append(f"VFC: {avg_hrv:.1f} ms")
     
-    # Analyse Stress
+    # Analyse stress
     if not stress_df.empty and 'STRESS_SCORE' in stress_df.columns:
         stress_data = stress_df[stress_df['STRESS_SCORE'] > 0]['STRESS_SCORE']
         if len(stress_data) > 0:
@@ -1100,10 +1100,10 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
     sections = []
     
     if not detailed_hr_df.empty:
-        hr_chart = chart_html('heart_rate', 'Frequence Cardiaque Continue')
+        hr_chart = chart_html('heart_rate', 'Frequence cardiaque continue')
         sections.append(f"""
         <div class="section">
-            <div class="section-header">Frequence Cardiaque</div>
+            <div class="section-header">Frequence cardiaque</div>
             <div class="metrics">
                 <div class="metric"><div class="metric-label">Lectures</div><div class="metric-value">{len(detailed_hr_df):,}</div></div>
                 <div class="metric"><div class="metric-label">Moyenne</div><div class="metric-value">{detailed_hr_df['bpm'].mean():.1f} bpm</div></div>
@@ -1114,7 +1114,7 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
         """)
     
     if not sleep_df.empty:
-        sleep_chart = chart_html('sleep', 'Analyse du Sommeil')
+        sleep_chart = chart_html('sleep', 'Analyse du sommeil')
         main_sleep = sleep_df[sleep_df['main_sleep'] == True]
         if not main_sleep.empty and 'minutes_asleep' in main_sleep.columns:
             avg_sleep = main_sleep['minutes_asleep'].mean() / 60
@@ -1130,12 +1130,12 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
             """)
     
     if not spo2_df.empty:
-        spo2_chart = chart_html('spo2', 'Saturation en Oxygene')
+        spo2_chart = chart_html('spo2', 'Saturation en oxygene')
         avg_spo2 = spo2_df['average_value'].mean()
         min_spo2 = spo2_df['lower_bound'].min() if 'lower_bound' in spo2_df.columns else spo2_df['average_value'].min()
         sections.append(f"""
         <div class="section">
-            <div class="section-header">Saturation Oxygene</div>
+            <div class="section-header">Saturation oxygene</div>
             <div class="metrics">
                 <div class="metric"><div class="metric-label">Moyenne</div><div class="metric-value">{avg_spo2:.1f}%</div></div>
                 <div class="metric"><div class="metric-label">Minimum</div><div class="metric-value">{min_spo2:.1f}%</div></div>
@@ -1145,7 +1145,7 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
         """)
     
     if not hrv_df.empty and 'rmssd' in hrv_df.columns:
-        hrv_chart = chart_html('hrv', 'Variabilite de la Frequence Cardiaque')
+        hrv_chart = chart_html('hrv', 'Variabilite de la frequence cardiaque')
         avg_hrv = hrv_df['rmssd'].mean()
         sections.append(f"""
         <div class="section">
@@ -1158,13 +1158,13 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
         """)
     
     if not detailed_steps_df.empty:
-        activity_chart = chart_html('activity', 'Activite Continue')
+        activity_chart = chart_html('activity', 'Activite continue')
         total_steps = detailed_steps_df['steps'].sum()
         sections.append(f"""
         <div class="section">
             <div class="section-header">Activite</div>
             <div class="metrics">
-                <div class="metric"><div class="metric-label">Total Pas</div><div class="metric-value">{int(total_steps):,}</div></div>
+                <div class="metric"><div class="metric-label">Total pas</div><div class="metric-value">{int(total_steps):,}</div></div>
             </div>
             {activity_chart}
         </div>
@@ -1186,7 +1186,7 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rapport Sante Fitbit - {name}</title>
+    <title>Rapport sante Fitbit - {name}</title>
     <style>
         /* Reset et base */
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
@@ -1422,24 +1422,24 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
 </head>
 <body>
     <button class="print-btn no-print" onclick="window.print()">
-        Imprimer / Sauvegarder PDF
+        Imprimer / sauvegarder PDF
     </button>
     
     <div class="instructions no-print">
         <strong>Instructions pour sauvegarder en PDF :</strong><br>
-        1. Cliquez sur le bouton rouge "Imprimer / Sauvegarder PDF"<br>
+        1. Cliquez sur le bouton rouge "Imprimer / sauvegarder PDF"<br>
         2. Dans la boite de dialogue, selectionnez "Enregistrer au format PDF"<br>
         3. Choisissez le format A4 et les marges par defaut<br>
         4. Cliquez sur "Enregistrer"
     </div>
     
     <div class="header">
-        <h1>Tableau de Bord Sante Fitbit</h1>
-        <div class="date">Rapport Detaillete Continu - Genere le {gen_date}</div>
+        <h1>Tableau de bord sante Fitbit</h1>
+        <div class="date">Rapport detaille continu - Genere le {gen_date}</div>
     </div>
     
     <div class="section">
-        <div class="section-header">Informations Patient</div>
+        <div class="section-header">Informations patient</div>
         <div class="metrics">
             <div class="metric">
                 <div class="metric-label">Nom</div>
@@ -1453,17 +1453,17 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
     </div>
     
     <div class="section">
-        <div class="section-header">Analyse Sante</div>
+        <div class="section-header">Analyse sante</div>
         {alert_html if alert_html else '<p style="color: #666; padding: 10px;">Aucune alerte significative detectee.</p>'}
     </div>
     
     <div class="section">
-        <div class="section-header">Statistiques Detailletes</div>
+        <div class="section-header">Statistiques detaillees</div>
         {''.join(sections)}
     </div>
     
     <div class="footer">
-        <p><strong>Tableau de Bord Sante Fitbit</strong></p>
+        <p><strong>Tableau de bord sante Fitbit</strong></p>
         <p>Genere le {gen_date}</p>
         <p style="margin-top: 10px; font-size: 8pt;">
             Ce rapport est fourni a titre informatif uniquement.<br>
@@ -1547,10 +1547,10 @@ def main():
     
     # Sidebar - tout dans UN SEUL bloc
     with st.sidebar:
-        st.header("Chargement des Donnees")
+        st.header("Chargement des donnees")
         
         uploaded_file = st.file_uploader(
-            "Uploader votre export Fitbit (ZIP)",
+            "Uploader votre export Fitbit (zip)",
             type=['zip'],
             help="Telechargez votre dossier Takeout.zip de Fitbit. Le fichier sera traite automatiquement."
         )
@@ -1578,9 +1578,9 @@ def main():
             html_content = st.session_state.get('html_report', '')
             if html_content:
                 st.download_button(
-                    label="Telecharger le rapport (HTML)",
+                    label="Telecharger le rapport (html)",
                     data=html_content.encode('utf-8'),
-                    file_name=f"Rapport_Sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.html",
+                    file_name=f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.html",
                     mime="text/html",
                     use_container_width=True
                 )
@@ -1589,9 +1589,9 @@ def main():
     
     st.markdown(f'''
     <div class="print-header">
-        <h1 style="color:#667eea; margin-bottom:5px">Tableau de Bord Sante Fitbit</h1>
+        <h1 style="color:#667eea; margin-bottom:5px">Tableau de bord sante Fitbit</h1>
         <p style="color:#666; font-size:1em; margin:0">
-            Rapport Detaillete Continu - Genere le {datetime.now().strftime('%d %B %Y a %H:%M')}
+            Rapport detaille continu - Genere le {datetime.now().strftime('%d %B %Y a %H:%M')}
         </p>
     </div>
     ''', unsafe_allow_html=True)
@@ -1641,7 +1641,7 @@ def main():
                 if fig_hr:
                     chart_images['heart_rate'] = fig_to_png_base64(fig_hr)
             
-            # Graphique Sommeil
+            # Graphique sommeil
             if not sleep_df.empty:
                 fig_sleep = create_sleep_chart(sleep_df)
                 if fig_sleep:
@@ -1659,7 +1659,7 @@ def main():
                 if fig_hrv:
                     chart_images['hrv'] = fig_to_png_base64(fig_hrv)
             
-            # Graphique Activite
+            # Graphique activite
             if not detailed_steps_df.empty:
                 fig_activity = create_continuous_activity_chart(detailed_steps_df, detailed_cals_df)
                 if fig_activity:
@@ -1676,10 +1676,10 @@ def main():
             st.session_state['report_ready'] = True
             
             # Afficher confirmation
-            st.success("Rapport genere! Cliquez sur 'Telecharger le rapport (HTML)' dans la barre laterale.")
+            st.success("Rapport genere! Cliquez sur 'Telecharger le rapport (html)' dans la barre laterale.")
     
-    # Informations Patient
-    st.markdown('<div class="section-header">Informations Patient</div>', unsafe_allow_html=True)
+    # Informations patient
+    st.markdown('<div class="section-header">Informations patient</div>', unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -1735,12 +1735,12 @@ def main():
         data_info.append(f"SpO2: {len(spo2_df)} jours")
     
     if data_info:
-        st.markdown("**Donnees Disponibles:** " + " | ".join(data_info))
+        st.markdown("**Donnees disponibles:** " + " | ".join(data_info))
     
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)
     
-    # Alertes Sante
-    st.markdown('<div class="section-header">Analyse Sante</div>', unsafe_allow_html=True)
+    # Alertes sante
+    st.markdown('<div class="section-header">Analyse sante</div>', unsafe_allow_html=True)
     
     alerts, warnings, info = analyze_health(hr_summary_df, sleep_df, hrv_df, spo2_df, stress_df)
     
@@ -1761,8 +1761,8 @@ def main():
     
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)
     
-    # Frequence Cardiaque Continue
-    st.markdown('<div class="section-header">Frequence Cardiaque Continue (Detaillete)</div>', unsafe_allow_html=True)
+    # Frequence cardiaque continue
+    st.markdown('<div class="section-header">Frequence cardiaque continue (detaillee)</div>', unsafe_allow_html=True)
     
     display_note("Graphique continu montrant toutes les lectures de frequence cardiaque. "
                 "Chaque point represente une mesure en temps reel. "
@@ -1771,13 +1771,13 @@ def main():
     if not detailed_hr_df.empty:
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Lectures Totales", f"{len(detailed_hr_df):,}")
+            st.metric("Lectures totales", f"{len(detailed_hr_df):,}")
         with col2:
-            st.metric("FC Moyenne", f"{detailed_hr_df['bpm'].mean():.1f} bpm")
+            st.metric("FC moyenne", f"{detailed_hr_df['bpm'].mean():.1f} bpm")
         with col3:
-            st.metric("FC Min", f"{detailed_hr_df['bpm'].min():.0f} bpm")
+            st.metric("FC min", f"{detailed_hr_df['bpm'].min():.0f} bpm")
         with col4:
-            st.metric("FC Max", f"{detailed_hr_df['bpm'].max():.0f} bpm")
+            st.metric("FC max", f"{detailed_hr_df['bpm'].max():.0f} bpm")
         
         fig = create_continuous_hr_chart(detailed_hr_df)
         if fig:
@@ -1792,8 +1792,8 @@ def main():
     
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)
     
-    # Activite Continue
-    st.markdown('<div class="section-header">Activite Continue (Detaillete)</div>', unsafe_allow_html=True)
+    # Activite continue
+    st.markdown('<div class="section-header">Activite continue (detaillee)</div>', unsafe_allow_html=True)
     
     display_note("Graphique continu montrant l'activite physique minute par minute. "
                 "Permet d'identifier les periodes d'activite et de repos.")
@@ -1802,13 +1802,13 @@ def main():
         col1, col2, col3 = st.columns(3)
         with col1:
             total_steps = detailed_steps_df['steps'].sum()
-            st.metric("Total Pas", f"{int(total_steps):,}")
+            st.metric("Total pas", f"{int(total_steps):,}")
         with col2:
             avg_daily = detailed_steps_df.groupby(detailed_steps_df['timestamp'].dt.date)['steps'].sum().mean()
-            st.metric("Moyenne Quotidienne", f"{int(avg_daily):,}")
+            st.metric("Moyenne quotidienne", f"{int(avg_daily):,}")
         with col3:
             active_minutes = len(detailed_steps_df[detailed_steps_df['steps'] > 0])
-            st.metric("Minutes Actives", f"{active_minutes:,}")
+            st.metric("Minutes actives", f"{active_minutes:,}")
         
         fig = create_continuous_activity_chart(detailed_steps_df, detailed_cals_df)
         if fig:
@@ -1819,7 +1819,7 @@ def main():
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)
     
     # Sommeil
-    st.markdown('<div class="section-header">Analyse du Sommeil</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Analyse du sommeil</div>', unsafe_allow_html=True)
     
     display_note("Duree et qualite du sommeil. Une duree de 7 a 9 heures est recommandee pour les adultes. "
                 "L'efficacite du sommeil (temps endormi / temps au lit) doit idealement etre superieure a 85%.")
@@ -1831,7 +1831,7 @@ def main():
         with col1:
             if 'minutes_asleep' in main_sleep.columns:
                 avg_hours = main_sleep['minutes_asleep'].mean() / 60
-                st.metric("Duree Moyenne", f"{avg_hours:.1f} heures")
+                st.metric("Duree moyenne", f"{avg_hours:.1f} heures")
         with col2:
             if 'efficiency' in main_sleep.columns:
                 avg_eff = main_sleep['efficiency'].mean()
@@ -1839,7 +1839,7 @@ def main():
         with col3:
             if not sleep_score_df.empty and 'overall_score' in sleep_score_df.columns:
                 avg_score = sleep_score_df['overall_score'].mean()
-                st.metric("Score de Sommeil", f"{avg_score:.0f}/100")
+                st.metric("Score de sommeil", f"{avg_score:.0f}/100")
         
         # Graphique de duree
         fig = create_sleep_chart(sleep_df)
@@ -1856,7 +1856,7 @@ def main():
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)
     
     # VFC
-    st.markdown('<div class="section-header">Variabilite de la Frequence Cardiaque</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Variabilite de la frequence cardiaque</div>', unsafe_allow_html=True)
     
     display_note("La VFC (RMSSD) indique la capacite de recuperation du systeme nerveux autonome. "
                 "Une VFC plus elevee est generalement associee a une meilleure recuperation et a moins de stress.")
@@ -1865,7 +1865,7 @@ def main():
         col1, col2 = st.columns(2)
         with col1:
             avg_hrv = hrv_df['rmssd'].mean()
-            st.metric("RMSSD Moyen", f"{avg_hrv:.1f} ms")
+            st.metric("RMSSD moyen", f"{avg_hrv:.1f} ms")
         with col2:
             latest_hrv = hrv_df['rmssd'].iloc[-1]
             st.metric("Dernier RMSSD", f"{latest_hrv:.1f} ms")
@@ -1879,7 +1879,7 @@ def main():
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)
     
     # SpO2
-    st.markdown('<div class="section-header">Saturation en Oxygene</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Saturation en oxygene</div>', unsafe_allow_html=True)
     
     display_note("La saturation en oxygene (SpO2) indique la quantite d'oxygene transportee par le sang. "
                 "Une valeur normale est comprise entre 95% et 100%.")
@@ -1888,13 +1888,13 @@ def main():
         col1, col2, col3 = st.columns(3)
         with col1:
             avg_spo2 = spo2_df['average_value'].mean()
-            st.metric("SpO2 Moyenne", f"{avg_spo2:.1f}%")
+            st.metric("SpO2 moyenne", f"{avg_spo2:.1f}%")
         with col2:
             min_spo2 = spo2_df['lower_bound'].min() if 'lower_bound' in spo2_df.columns else spo2_df['average_value'].min()
-            st.metric("SpO2 Minimum", f"{min_spo2:.1f}%")
+            st.metric("SpO2 minimum", f"{min_spo2:.1f}%")
         with col3:
             max_spo2 = spo2_df['upper_bound'].max() if 'upper_bound' in spo2_df.columns else spo2_df['average_value'].max()
-            st.metric("SpO2 Maximum", f"{max_spo2:.1f}%")
+            st.metric("SpO2 maximum", f"{max_spo2:.1f}%")
         
         fig = create_spo2_chart(spo2_df)
         if fig:
@@ -1905,7 +1905,7 @@ def main():
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)
     
     # Stress
-    st.markdown('<div class="section-header">Analyse du Stress</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Analyse du stress</div>', unsafe_allow_html=True)
     
     display_note("Le score de stress combine plusieurs metriques pour estimer le niveau de stress du corps. "
                 "Un score eleve sur une periode prolongee peut indiquer un besoin de recuperation.")
@@ -1916,15 +1916,15 @@ def main():
             col1, col2, col3 = st.columns(3)
             with col1:
                 avg_stress = stress_data['STRESS_SCORE'].mean()
-                st.metric("Stress Moyen", f"{avg_stress:.0f}/100")
+                st.metric("Stress moyen", f"{avg_stress:.0f}/100")
             with col2:
                 if 'SLEEP_POINTS' in stress_data.columns:
                     avg_sleep_pts = stress_data['SLEEP_POINTS'].mean()
-                    st.metric("Points Sommeil", f"{avg_sleep_pts:.0f}")
+                    st.metric("Points sommeil", f"{avg_sleep_pts:.0f}")
             with col3:
                 if 'EXERTION_POINTS' in stress_data.columns:
                     avg_exert = stress_data['EXERTION_POINTS'].mean()
-                    st.metric("Points Effort", f"{avg_exert:.0f}")
+                    st.metric("Points effort", f"{avg_exert:.0f}")
             
             fig = create_stress_chart(stress_df)
             if fig:
@@ -1936,9 +1936,9 @@ def main():
     
     # Pied de page
     st.markdown(f'''
-    <div style="text-align: center; margin-top: 50px; padding: 25px; color: #666; 
+    <div style="text-align: center; margin-top: 50px; padding: 25px; color: #666;
                 border-top: 2px solid #eee; background: #f8f9fa; border-radius: 10px;">
-        <p style="font-size: 1.1em; margin-bottom: 10px;"><b>Tableau de Bord Sante Fitbit</b></p>
+        <p style="font-size: 1.1em; margin-bottom: 10px;"><b>Tableau de bord sante Fitbit</b></p>
         <p style="font-size: 0.9em; color: #888;">
             Genere le {datetime.now().strftime('%d %B %Y a %H:%M')}
         </p>
