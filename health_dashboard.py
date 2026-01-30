@@ -22,12 +22,30 @@ from plotly.subplots import make_subplots
 import plotly.io as pio
 
 # Convert plotly figures to PNG bytes for PDF embedding
-def fig_to_png_base64(fig):
+def fig_to_png_base64(fig, width=700, height=350):
     """Convert a plotly figure to base64 encoded PNG"""
     try:
-        img_bytes = pio.to_image(fig, format="png", width=700, height=300, scale=1.5)
+        img_bytes = pio.to_image(fig, format="png", width=width, height=height, scale=2)
         return base64.b64encode(img_bytes).decode('utf-8')
     except Exception as e:
+        st.warning(f"Erreur conversion graphique: {str(e)}")
+        return None
+
+# Generate PDF from HTML using weasyprint
+def generate_pdf_from_html(html_content):
+    """Convert HTML to PDF using weasyprint"""
+    try:
+        from weasyprint import HTML, CSS
+        import tempfile
+        
+        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+            HTML(string=html_content).write_pdf(tmp.name)
+            with open(tmp.name, 'rb') as f:
+                pdf_bytes = f.read()
+            os.unlink(tmp.name)
+            return pdf_bytes
+    except Exception as e:
+        st.error(f"Erreur generation PDF: {str(e)}")
         return None
 
 st.set_page_config(
@@ -1218,44 +1236,41 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
                 font-size: 9pt !important;
             }}
             .no-print {{ display: none !important; }}
-            .page-break {{ 
-                page-break-after: auto !important;
-                display: none !important;
-            }}
             .section {{ 
-                margin-bottom: 12px !important;
-                page-break-inside: auto !important;
+                margin-bottom: 15px !important;
+                page-break-inside: avoid !important;
             }}
             .section-header {{
-                font-size: 11pt !important;
-                padding: 8px 12px !important;
-                margin-bottom: 10px !important;
+                font-size: 12pt !important;
+                padding: 10px 15px !important;
+                margin-bottom: 12px !important;
             }}
             .metrics {{
                 gap: 10px !important;
-                margin-bottom: 10px !important;
+                margin-bottom: 12px !important;
             }}
             .metric {{
-                padding: 8px 12px !important;
-                min-width: 100px !important;
+                padding: 10px 15px !important;
+                min-width: 120px !important;
             }}
             .metric-value {{
-                font-size: 12pt !important;
+                font-size: 14pt !important;
             }}
             .chart-container {{
-                margin: 10px 0 !important;
+                margin: 15px 0 !important;
+                page-break-inside: avoid !important;
             }}
             .chart-container img {{
-                max-height: 250px !important;
-                width: auto !important;
+                max-height: 280px !important;
+                width: 100% !important;
             }}
             .footer {{
-                margin-top: 20px !important;
-                padding: 15px !important;
+                margin-top: 30px !important;
+                padding: 20px !important;
             }}
             .alert {{
-                padding: 8px 12px !important;
-                margin: 6px 0 !important;
+                padding: 10px 15px !important;
+                margin: 8px 0 !important;
             }}
         }}
         
@@ -1664,20 +1679,28 @@ def main():
                 detailed_hr_df, detailed_steps_df, chart_images
             )
             
-            # Stocker dans session state pour telechargement
-            st.session_state['html_report'] = html_content
-            st.session_state['report_ready'] = True
+            # Generer le PDF
+            pdf_bytes = generate_pdf_from_html(html_content)
             
-            # Afficher le bouton de telechargement immediatement
-            st.success("Rapport genere!")
-            st.download_button(
-                label="📥 Telecharger le rapport (HTML)",
-                data=html_content.encode('utf-8'),
-                file_name=f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.html",
-                mime="text/html",
-                use_container_width=True
-            )
-            st.info("💡 Astuce: Ouvrez le fichier HTML dans votre navigateur et faites Ctrl+P pour l'enregistrer en PDF.")
+            if pdf_bytes:
+                st.success("✅ Rapport PDF genere avec succes!")
+                st.download_button(
+                    label="📥 Telecharger le rapport (PDF)",
+                    data=pdf_bytes,
+                    file_name=f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.pdf",
+                    mime="application/pdf",
+                    use_container_width=True
+                )
+            else:
+                # Fallback to HTML if PDF generation fails
+                st.warning("Generation PDF indisponible, telechargement HTML propose")
+                st.download_button(
+                    label="📥 Telecharger le rapport (HTML)",
+                    data=html_content.encode('utf-8'),
+                    file_name=f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.html",
+                    mime="text/html",
+                    use_container_width=True
+                )
     
     # Informations patient
     st.markdown('<div class="section-header">Informations patient</div>', unsafe_allow_html=True)
