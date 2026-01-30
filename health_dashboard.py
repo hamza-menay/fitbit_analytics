@@ -641,13 +641,15 @@ def create_continuous_activity_chart(steps_df, calories_df):
     else:
         steps_plot = steps_df.copy()
     
-    # Pas
+    # Pas - couleur foncée pour meilleure visibilité en PDF
     fig.add_trace(
         go.Bar(
             x=steps_plot['timestamp'],
             y=steps_plot['steps'],
             name='Pas',
-            marker_color='#2ecc71',
+            marker_color='#1e8449',
+            marker_line_color='#145a32',
+            marker_line_width=0.5,
             hovertemplate='<b>%{x|%Y-%m-%d %H:%M}</b><br>Pas: %{y}<extra></extra>'
         ),
         row=1, col=1
@@ -1559,10 +1561,13 @@ def main():
             st.success(f"Fichier charge: {uploaded_file.name}")
         
         st.markdown("---")
-        st.markdown("**Instructions:**")
+        st.markdown("**Confidentialite :**")
+        st.info("🔒 Vos donnees sont traitees uniquement en memoire. Aucun fichier n'est conserve sur le serveur.")
+        
+        st.markdown("**Instructions :**")
         st.markdown("""
         1. Exportez vos donnees depuis l'application Fitbit
-        2. Telechargez le fichier ZIP ici
+        2. Telechargez le fichier ZIP ici (fichier temporaire)
         3. Les graphiques se genereront automatiquement
         4. Cliquez sur "Generer rapport" ci-dessous
         """)
@@ -1607,7 +1612,7 @@ def main():
     else:
         base_path = find_takeout_folder()
         if base_path is None:
-            st.info("Aucun dossier Takeout trouve localement. Veuillez uploader un fichier ZIP depuis la barre laterale.")
+            st.info("📤 Aucune donnee disponible. Veuillez uploader votre fichier Takeout.zip depuis la barre laterale. Les donnees sont traitees temporairement et ne sont pas conservees.")
             return
     
     with st.spinner('Chargement des donnees detaillees...'):

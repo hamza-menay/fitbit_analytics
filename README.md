@@ -8,6 +8,7 @@ Transformez vos données Google Fitbit Takeout en visualisations de santé déta
 - **Plus de détails que l'application Fitbit** - L'application Fitbit agrège les données ; ce tableau de bord affiche les mesures brutes continues
 - **Graphiques interactifs** - Zoomez, déplacez et explorez vos données de santé avec Plotly
 - **Export PDF** - Générez des rapports HTML imprimables avec des graphiques intégrés
+- **Confidentialité** - Vos données sont traitées uniquement en mémoire, aucun fichier n'est conservé sur le serveur
 - **Plusieurs sources de données :**
   - Fréquence cardiaque (continue, toutes les quelques secondes)
   - Phases et durée du sommeil
@@ -30,8 +31,8 @@ Transformez vos données Google Fitbit Takeout en visualisations de santé déta
    ```
 
 3. **Téléchargez vos données :**
-   - Téléchargez le fichier `Takeout.zip` dans la barre latérale
-   - Ou placez votre dossier `Takeout*/Fitbit` dans le même répertoire
+   - Téléchargez le fichier `Takeout.zip` dans la barre latérale (traitement temporaire uniquement)
+   - Ou placez votre dossier `Takeout*/Fitbit` dans le même répertoire (mode local)
 
 4. **Générez un rapport PDF :**
    - Cliquez sur "Generer rapport" dans la barre latérale
@@ -45,6 +46,12 @@ L'application Fitbit standard affiche des résumés quotidiens et un historique 
 - **Tendances à long terme** - Visualisez toutes vos données à la fois, pas jour par jour
 - **Analyse personnalisée** - Alertes santé et métriques calculées à partir de votre jeu de données complet
 - **Rapports portables** - Générez des PDF pour vos archives ou votre professionnel de santé
+
+## Confidentialité et sécurité
+
+- **Aucune donnée stockée** : Les fichiers uploadés sont traités en mémoire uniquement et ne sont jamais conservés sur le serveur
+- **Traitement local** : Tout le traitement des données s'effectue localement dans votre navigateur
+- **Aucune connexion externe** : Vos données de santé ne sont transmises à aucun service tiers
 
 ## Prérequis
 
