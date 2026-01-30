@@ -31,228 +31,21 @@ def fig_to_png_base64(fig, width=700, height=350):
         st.warning(f"Erreur conversion graphique: {str(e)}")
         return None
 
-# Generate PDF using fpdf2 (pure Python, works on Streamlit Cloud)
-def generate_pdf_report(profile, hr_summary, sleep_df, hrv_df, spo2_df, stress_df, 
-                        detailed_hr_df, detailed_steps_df, chart_images):
-    """Generate PDF report using fpdf2 (works on Streamlit Cloud)"""
+# Generate PDF from HTML using weasyprint
+def generate_pdf_from_html(html_content):
+    """Convert HTML to PDF using weasyprint (requires packages.txt for system deps)"""
     try:
-        from fpdf import FPDF
+        from weasyprint import HTML
         import tempfile
-        from datetime import datetime
         
-        class HealthReport(FPDF):
-            def header(self):
-                # Logo/title area
-                self.set_font('Helvetica', 'B', 20)
-                self.set_text_color(102, 126, 234)
-                self.cell(0, 15, 'Tableau de bord santé Fitbit', ln=True, align='C')
-                self.set_font('Helvetica', '', 11)
-                self.set_text_color(100, 100, 100)
-                self.cell(0, 8, f"Rapport détaillé continu - Généré le {datetime.now().strftime('%d %B %Y')}", ln=True, align='C')
-                self.ln(5)
-                # Line separator
-                self.set_draw_color(102, 126, 234)
-                self.line(10, self.get_y(), 200, self.get_y())
-                self.ln(10)
-            
-            def footer(self):
-                self.set_y(-25)
-                self.set_font('Helvetica', 'I', 8)
-                self.set_text_color(128, 128, 128)
-                self.cell(0, 5, f'Page {self.page_no()}', align='C')
-                self.ln(5)
-                self.set_font('Helvetica', '', 7)
-                self.multi_cell(0, 4, "Ce rapport est fourni à titre informatif uniquement. Consultez toujours un professionnel de santé qualifié pour les décisions médicales.", align='C')
-            
-            def section_header(self, title):
-                self.set_fill_color(102, 126, 234)
-                self.set_text_color(255, 255, 255)
-                self.set_font('Helvetica', 'B', 13)
-                self.cell(0, 12, f'  {title}', ln=True, fill=True)
-                self.set_text_color(0, 0, 0)
-                self.ln(3)
-            
-            def metric_row(self, metrics):
-                # metrics: list of (label, value) tuples
-                self.set_font('Helvetica', '', 9)
-                col_width = 190 / len(metrics)
-                y_start = self.get_y()
-                
-                for label, value in metrics:
-                    self.set_fill_color(248, 249, 250)
-                    self.set_draw_color(102, 126, 234)
-                    self.set_line_width(0.5)
-                    self.cell(col_width - 5, 20, '', border='L', fill=True)
-                    
-                    # Label
-                    self.set_xy(self.get_x() - col_width + 5, y_start + 3)
-                    self.set_text_color(100, 100, 100)
-                    self.set_font('Helvetica', '', 8)
-                    self.cell(col_width - 10, 5, label.upper())
-                    
-                    # Value
-                    self.set_xy(self.get_x() - col_width + 10, y_start + 10)
-                    self.set_text_color(50, 50, 50)
-                    self.set_font('Helvetica', 'B', 14)
-                    self.cell(col_width - 15, 8, str(value))
-                    
-                    self.set_xy(self.get_x(), y_start)
-                
-                self.ln(25)
-            
-            def add_chart(self, chart_name, chart_images, title=""):
-                if chart_name in chart_images and chart_images[chart_name]:
-                    try:
-                        import base64
-                        from io import BytesIO
-                        from PIL import Image
-                        
-                        # Decode base64 image
-                        img_bytes = base64.b64decode(chart_images[chart_name])
-                        img = Image.open(BytesIO(img_bytes))
-                        
-                        # Save to temp file
-                        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
-                            img.save(tmp.name, 'PNG')
-                            
-                            # Calculate dimensions (max width 180mm, maintain aspect ratio)
-                            img_width = 180
-                            aspect = img.height / img.width
-                            img_height = img_width * aspect * 0.5  # Scale factor for PDF
-                            
-                            if title:
-                                self.set_font('Helvetica', 'I', 9)
-                                self.set_text_color(100, 100, 100)
-                                self.cell(0, 6, title, ln=True, align='C')
-                            
-                            self.image(tmp.name, x=15, w=img_width, h=img_height)
-                            self.ln(5)
-                            
-                            os.unlink(tmp.name)
-                            return True
-                    except Exception as e:
-                        self.set_font('Helvetica', 'I', 9)
-                        self.set_text_color(150, 150, 150)
-                        self.cell(0, 10, f'[Graphique non disponible]', ln=True, align='C')
-                        return False
-                return False
-            
-            def alert_box(self, text, alert_type='info'):
-                colors = {
-                    'critical': (198, 40, 40),  # red
-                    'warning': (239, 108, 0),   # orange
-                    'info': (46, 125, 50)       # green
-                }
-                color = colors.get(alert_type, (100, 100, 100))
-                
-                self.set_draw_color(*color)
-                self.set_line_width(1)
-                self.set_fill_color(255, 255, 255)
-                
-                self.set_font('Helvetica', '', 10)
-                self.set_text_color(*color)
-                
-                # Draw left border and text
-                y_before = self.get_y()
-                self.multi_cell(0, 8, f'  {text}', border='L', fill=True)
-                self.ln(3)
-                self.set_text_color(0, 0, 0)
-        
-        # Create PDF
-        pdf = HealthReport()
-        pdf.set_auto_page_break(auto=True, margin=25)
-        pdf.add_page()
-        
-        # Patient info
-        name = profile.get('display_name', 'N/A') if profile else 'N/A'
-        age_gender = "N/A"
-        if profile and 'date_of_birth' in profile:
-            try:
-                dob = datetime.strptime(profile['date_of_birth'], '%Y-%m-%d')
-                age = int((datetime.now() - dob).days / 365.25)
-                gender = profile.get('gender', '')
-                age_gender = f"{age} ans / {gender}"
-            except:
-                pass
-        
-        pdf.section_header('Informations patient')
-        pdf.metric_row([('Nom', name), ('Age / Sexe', age_gender)])
-        
-        # Health analysis
-        pdf.section_header('Analyse santé')
-        alerts, warnings, info = analyze_health(hr_summary, sleep_df, hrv_df, spo2_df, stress_df)
-        
-        for alert in alerts:
-            pdf.alert_box(alert, 'critical')
-        for warning in warnings:
-            pdf.alert_box(warning, 'warning')
-        for i in info:
-            pdf.alert_box(i, 'info')
-        
-        if not any([alerts, warnings, info]):
-            pdf.set_font('Helvetica', 'I', 10)
-            pdf.set_text_color(100, 100, 100)
-            pdf.cell(0, 10, 'Aucune alerte significative détectée.', ln=True)
-        
-        # Heart rate section
-        if not detailed_hr_df.empty:
-            pdf.add_page()
-            pdf.section_header('Fréquence cardiaque')
-            pdf.metric_row([
-                ('Lectures', f"{len(detailed_hr_df):,}"),
-                ('Moyenne', f"{detailed_hr_df['bpm'].mean():.1f} bpm"),
-                ('Min/Max', f"{detailed_hr_df['bpm'].min():.0f}/{detailed_hr_df['bpm'].max():.0f}")
-            ])
-            pdf.add_chart('heart_rate', chart_images, 'Fréquence cardiaque continue')
-        
-        # Sleep section
-        if not sleep_df.empty:
-            main_sleep = sleep_df[sleep_df['main_sleep'] == True]
-            if not main_sleep.empty and 'minutes_asleep' in main_sleep.columns:
-                pdf.add_page()
-                pdf.section_header('Sommeil')
-                avg_sleep = main_sleep['minutes_asleep'].mean() / 60
-                pdf.metric_row([
-                    ('Nuits', len(main_sleep)),
-                    ('Moyenne', f"{avg_sleep:.1f}h")
-                ])
-                pdf.add_chart('sleep', chart_images, 'Analyse du sommeil')
-        
-        # SpO2 section
-        if not spo2_df.empty:
-            pdf.add_page()
-            pdf.section_header('Saturation oxygène')
-            avg_spo2 = spo2_df['average_value'].mean()
-            min_spo2 = spo2_df['lower_bound'].min() if 'lower_bound' in spo2_df.columns else spo2_df['average_value'].min()
-            pdf.metric_row([
-                ('Moyenne', f"{avg_spo2:.1f}%"),
-                ('Minimum', f"{min_spo2:.1f}%")
-            ])
-            pdf.add_chart('spo2', chart_images, 'Saturation en oxygène')
-        
-        # HRV section
-        if not hrv_df.empty and 'rmssd' in hrv_df.columns:
-            pdf.add_page()
-            pdf.section_header('Variabilité FC')
-            avg_hrv = hrv_df['rmssd'].mean()
-            pdf.metric_row([('RMSSD', f"{avg_hrv:.1f} ms")])
-            pdf.add_chart('hrv', chart_images, 'Variabilité de la fréquence cardiaque')
-        
-        # Activity section
-        if not detailed_steps_df.empty:
-            pdf.add_page()
-            pdf.section_header('Activité')
-            total_steps = detailed_steps_df['steps'].sum()
-            pdf.metric_row([('Total pas', f"{int(total_steps):,}")])
-            pdf.add_chart('activity', chart_images, 'Activité continue')
-        
-        # Output PDF bytes
-        return pdf.output(dest='S').encode('latin-1') if isinstance(pdf.output(dest='S'), str) else pdf.output(dest='S')
-        
+        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+            HTML(string=html_content).write_pdf(tmp.name)
+            with open(tmp.name, 'rb') as f:
+                pdf_bytes = f.read()
+            os.unlink(tmp.name)
+            return pdf_bytes
     except Exception as e:
-        st.error(f"Erreur génération PDF: {str(e)}")
-        import traceback
-        st.error(traceback.format_exc())
+        st.error(f"Erreur generation PDF: {str(e)}")
         return None
 
 st.set_page_config(
@@ -1880,11 +1673,14 @@ def main():
                 if fig_activity:
                     chart_images['activity'] = fig_to_png_base64(fig_activity)
             
-            # Generer le PDF avec fpdf2 (compatible Streamlit Cloud)
-            pdf_bytes = generate_pdf_report(
+            # Generer le HTML avec les images
+            html_content = generate_printable_html(
                 profile, hr_summary_df, sleep_df, hrv_df, spo2_df, stress_df,
                 detailed_hr_df, detailed_steps_df, chart_images
             )
+            
+            # Generer le PDF avec weasyprint
+            pdf_bytes = generate_pdf_from_html(html_content)
             
             if pdf_bytes:
                 st.success("✅ Rapport PDF genere avec succes!")
@@ -1896,7 +1692,15 @@ def main():
                     use_container_width=True
                 )
             else:
-                st.error("Erreur lors de la generation du PDF. Veuillez reessayer.")
+                # Fallback to HTML si PDF echoue
+                st.warning("Generation PDF indisponible, telechargement HTML propose")
+                st.download_button(
+                    label="📥 Telecharger le rapport (HTML)",
+                    data=html_content.encode('utf-8'),
+                    file_name=f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.html",
+                    mime="text/html",
+                    use_container_width=True
+                )
     
     # Informations patient
     st.markdown('<div class="section-header">Informations patient</div>', unsafe_allow_html=True)
