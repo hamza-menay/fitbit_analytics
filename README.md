@@ -1,63 +1,59 @@
-# Fitbit Analytics Dashboard
+# Tableau de bord Fitbit Analytics
 
-Transform your Google Fitbit Takeout data into detailed, organized health visualizations with higher granularity than the standard Fitbit app.
+Transformez vos données Google Fitbit Takeout en visualisations de santé détaillées et organisées avec une granularité supérieure à celle de l'application Fitbit standard.
 
-## Features
+## Fonctionnalités
 
-- **Continuous Data Visualization** - See every data point (second-by-second heart rate, minute-by-minute activity)
-- **Higher Detail Than Fitbit App** - The Fitbit app aggregates data; this dashboard shows the raw continuous measurements
-- **Interactive Charts** - Zoom, pan, and explore your health data with Plotly
-- **PDF Export** - Generate printable HTML reports with embedded charts
-- **Multiple Data Sources:**
-  - Heart Rate (continuous, every few seconds)
-  - Sleep stages and duration
-  - Blood Oxygen (SpO2)
-  - Heart Rate Variability (HRV)
-  - Steps and Activity
-  - Stress scores
+- **Visualisation continue des données** - Voyez chaque point de données (fréquence cardiaque seconde par seconde, activité minute par minute)
+- **Plus de détails que l'application Fitbit** - L'application Fitbit agrège les données ; ce tableau de bord affiche les mesures brutes continues
+- **Graphiques interactifs** - Zoomez, déplacez et explorez vos données de santé avec Plotly
+- **Export PDF** - Générez des rapports HTML imprimables avec des graphiques intégrés
+- **Plusieurs sources de données :**
+  - Fréquence cardiaque (continue, toutes les quelques secondes)
+  - Phases et durée du sommeil
+  - Taux d'oxygène dans le sang (SpO2)
+  - Variabilité de la fréquence cardiaque (HRV)
+  - Pas et activité
+  - Scores de stress
 
-## Quick Start
+## Démarrage rapide
 
-1. **Export your Fitbit data:**
-   - Go to [Fitbit Data Export](https://www.fitbit.com/settings/data/export)
-   - Request your data (may take up to 24 hours)
-   - Download the ZIP file
+1. **Exportez vos données Fitbit :**
+   - Allez sur [Export de données Fitbit](https://www.fitbit.com/settings/data/export)
+   - Demandez vos données (peut prendre jusqu'à 24 heures)
+   - Téléchargez le fichier ZIP
 
-2. **Run the dashboard:**
+2. **Lancez le tableau de bord :**
    ```bash
    pip install -r requirements.txt
    streamlit run health_dashboard.py
    ```
 
-3. **Upload your data:**
-   - Upload the `Takeout.zip` file in the sidebar
-   - Or place your `Takeout*/Fitbit` folder in the same directory
+3. **Téléchargez vos données :**
+   - Téléchargez le fichier `Takeout.zip` dans la barre latérale
+   - Ou placez votre dossier `Takeout*/Fitbit` dans le même répertoire
 
-4. **Generate PDF Report:**
-   - Click "Generer rapport" in the sidebar
-   - Download the HTML file
-   - Open in browser and press Ctrl+P → Save as PDF
+4. **Générez un rapport PDF :**
+   - Cliquez sur "Generer rapport" dans la barre latérale
+   - Téléchargez le fichier HTML
+   - Ouvrez-le dans le navigateur et appuyez sur Ctrl+P → Enregistrer en PDF
 
-## Why This Exists
+## Pourquoi ce projet existe
 
-The standard Fitbit app shows daily summaries and limited history. This dashboard provides:
-- **Full temporal resolution** - Every heart rate measurement, not just averages
-- **Long-term trends** - View all your data at once, not day-by-day
-- **Custom analysis** - Health alerts and metrics calculated from your complete dataset
-- **Portable reports** - Generate PDFs for your records or healthcare provider
+L'application Fitbit standard affiche des résumés quotidiens et un historique limité. Ce tableau de bord fournit :
+- **Résolution temporelle complète** - Chaque mesure de fréquence cardiaque, pas seulement les moyennes
+- **Tendances à long terme** - Visualisez toutes vos données à la fois, pas jour par jour
+- **Analyse personnalisée** - Alertes santé et métriques calculées à partir de votre jeu de données complet
+- **Rapports portables** - Générez des PDF pour vos archives ou votre professionnel de santé
 
-## Requirements
+## Prérequis
 
 - Python 3.8+
 - Streamlit
 - Pandas
 - Plotly
-- Kaleido (for PNG export)
+- Kaleido (pour l'export PNG)
 
-## Screenshot
+## Licence
 
-![Dashboard Screenshot](screenshot.png)
-
-## License
-
-MIT License
+Licence MIT
