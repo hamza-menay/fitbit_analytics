@@ -1095,9 +1095,11 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
     gen_date = datetime.now().strftime('%d %B %Y')
     chart_images = chart_images or {}
     
-    # Infos patient
+    # Infos utilisateur
     name = profile.get('display_name', 'N/A') if profile else 'N/A'
     age_gender = "N/A"
+    height_weight_bmi = "N/A"
+    
     if profile and 'date_of_birth' in profile:
         try:
             dob = datetime.strptime(profile['date_of_birth'], '%Y-%m-%d')
@@ -1106,6 +1108,15 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
             age_gender = f"{age} ans / {gender}"
         except:
             pass
+    
+    # Calculate BMI if height and weight available
+    if profile:
+        height = profile.get('height')
+        weight = profile.get('weight')
+        if isinstance(height, (int, float)) and isinstance(weight, (int, float)) and height > 0:
+            height_m = height / 100
+            bmi = weight / (height_m ** 2)
+            height_weight_bmi = f"{int(height)} cm / {int(weight)} kg / IMC {bmi:.1f}"
     
     # Helper to create chart HTML
     def chart_html(chart_name, title):
@@ -1458,7 +1469,7 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
     </div>
     
     <div class="section">
-        <div class="section-header">Informations patient</div>
+        <div class="section-header">Informations</div>
         <div class="metrics">
             <div class="metric">
                 <div class="metric-label">Nom</div>
@@ -1467,6 +1478,10 @@ def generate_printable_html(profile, hr_summary, sleep_df, hrv_df, spo2_df, stre
             <div class="metric">
                 <div class="metric-label">Age / Sexe</div>
                 <div class="metric-value">{age_gender}</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Taille / Poids / IMC</div>
+                <div class="metric-value">{height_weight_bmi}</div>
             </div>
         </div>
     </div>
@@ -1725,8 +1740,8 @@ def main():
                     use_container_width=True
                 )
     
-    # Informations patient
-    st.markdown('<div class="section-header">Informations patient</div>', unsafe_allow_html=True)
+    # Informations
+    st.markdown('<div class="section-header">Informations</div>', unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     
