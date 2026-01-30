@@ -669,7 +669,9 @@ def create_continuous_activity_chart(steps_df, calories_df):
                 x=cals_plot['timestamp'],
                 y=cals_plot['calories'],
                 name='Calories',
-                marker_color='#e74c3c',
+                marker_color='#1e8449',
+                marker_line_color='#145a32',
+                marker_line_width=0.5,
                 hovertemplate='<b>%{x|%Y-%m-%d %H:%M}</b><br>Cal: %{y:.1f}<extra></extra>'
             ),
             row=2, col=1
@@ -1576,21 +1578,7 @@ def main():
         st.markdown("**Export PDF**")
         
         # Bouton de generation
-        st.button("Generer rapport", type="primary", use_container_width=True, on_click=on_generate_click)
-        
-        # Afficher le bouton de telechargement si le rapport est pret
-        if st.session_state.get('report_ready', False):
-            html_content = st.session_state.get('html_report', '')
-            if html_content:
-                st.download_button(
-                    label="Telecharger le rapport (html)",
-                    data=html_content.encode('utf-8'),
-                    file_name=f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.html",
-                    mime="text/html",
-                    use_container_width=True
-                )
-                st.success("Rapport genere!")
-                st.info("Ouvrez le fichier HTML et faites Ctrl+P -> PDF")
+        st.button("Generer et telecharger le rapport (PDF)", type="primary", use_container_width=True, on_click=on_generate_click)
     
     st.markdown(f'''
     <div class="print-header">
@@ -1680,8 +1668,16 @@ def main():
             st.session_state['html_report'] = html_content
             st.session_state['report_ready'] = True
             
-            # Afficher confirmation
-            st.success("Rapport genere! Cliquez sur 'Telecharger le rapport (html)' dans la barre laterale.")
+            # Afficher le bouton de telechargement immediatement
+            st.success("Rapport genere!")
+            st.download_button(
+                label="📥 Telecharger le rapport (HTML)",
+                data=html_content.encode('utf-8'),
+                file_name=f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.html",
+                mime="text/html",
+                use_container_width=True
+            )
+            st.info("💡 Astuce: Ouvrez le fichier HTML dans votre navigateur et faites Ctrl+P pour l'enregistrer en PDF.")
     
     # Informations patient
     st.markdown('<div class="section-header">Informations patient</div>', unsafe_allow_html=True)
