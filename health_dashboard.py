@@ -1683,11 +1683,34 @@ def main():
             pdf_bytes = generate_pdf_from_html(html_content)
             
             if pdf_bytes:
-                st.success("✅ Rapport PDF genere avec succes!")
+                st.success("✅ Rapport PDF genere avec succes! Telechargement automatique...")
+                
+                # Auto-download using HTML/JS
+                import base64
+                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+                filename = f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.pdf"
+                
+                download_link = f'''
+                <script>
+                    var link = document.createElement('a');
+                    link.href = 'data:application/pdf;base64,{b64_pdf}';
+                    link.download = '{filename}';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                </script>
+                <p style="color: green; font-size: 14px;">
+                    ✅ Le PDF a ete telecharge automatiquement. Si ce n\'est pas le cas, 
+                    <a href="data:application/pdf;base64,{b64_pdf}" download="{filename}">cliquez ici</a>.
+                </p>
+                '''
+                st.markdown(download_link, unsafe_allow_html=True)
+                
+                # Also show download button as fallback
                 st.download_button(
-                    label="📥 Telecharger le rapport (PDF)",
+                    label="📥 Telecharger manuellement (si le telechargement auto a echoue)",
                     data=pdf_bytes,
-                    file_name=f"Rapport_sante_Fitbit_{datetime.now().strftime('%Y%m%d')}.pdf",
+                    file_name=filename,
                     mime="application/pdf",
                     use_container_width=True
                 )
